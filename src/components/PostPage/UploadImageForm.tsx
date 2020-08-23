@@ -1,17 +1,16 @@
-import React, { FormEvent, ChangeEvent, useState, useEffect } from 'react';
+import React, { FormEvent, ChangeEvent, useState } from 'react';
 import Compress from 'compress.js';
-import axios from 'axios';
+import axios from '../../network/axiosConfig';
+import { select } from '../../store/selectors';
+import { useSelector } from 'react-redux';
 
-const UploadImage: React.FC = () => {
+const UploadImageForm: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [fileName, setFileName] = useState('');
-  const [author, setAuthor] = useState('');
   const [location, setLocation] = useState('');
-  const compress = new Compress();
+  const authorId = useSelector(select.userId);
 
-  useEffect(() => {
-    if (!author) setAuthor('me');
-  }, [author]);
+  const compress = new Compress();
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -25,14 +24,11 @@ const UploadImage: React.FC = () => {
     if (location) {
       formData.append('location', location);
     }
-    formData.append('author', author);
+    formData.append('authorId', `${authorId}`);
     formData.append('image', image);
     formData.append('name', fileName);
 
-    const { data } = await axios.post(
-      'http://localhost:4000/api/v1/images',
-      formData,
-    );
+    const { data } = await axios.post('/images', formData);
     console.log('data', data);
   };
 
@@ -44,9 +40,9 @@ const UploadImage: React.FC = () => {
     const files = [...Array.from(event.target.files)];
     const compFile: any = await compress.compress(files, {
       size: 1,
-      quality: 0.75,
-      maxWidth: 300,
-      maxHeight: 300,
+      quality: 1,
+      maxWidth: 400,
+      maxHeight: 400,
       resize: true,
     });
 
@@ -77,4 +73,4 @@ const UploadImage: React.FC = () => {
   );
 };
 
-export default UploadImage;
+export default UploadImageForm;
