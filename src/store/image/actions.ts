@@ -13,10 +13,12 @@ import {
   SetAllImagesActionType,
 } from './types';
 
-export function getAllImages(): AppThunk<Promise<void>> {
+export function getAllImages(setting: string): AppThunk<Promise<void>> {
   return async (dispatch, getState) => {
     try {
-      const { data } = await axios.get('/images');
+      const { data } = await axios.get(`/images?sort=${setting}`);
+      console.log('data', data);
+
       dispatch(setAllImagesAction(data.images));
     } catch (error) {
       throw error;

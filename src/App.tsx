@@ -7,7 +7,7 @@ import Login from './components/LoginPage/Login';
 import Signup from './components/SignupPage/Signup';
 import axios from './network/axiosConfig';
 import { select } from './store/selectors';
-import './App.css';
+import useStyles from './AppStyles';
 import NavBar from './components/NavBar/NavBar';
 import { logout } from './store/session/actions';
 
@@ -15,6 +15,7 @@ function App() {
   const token = useSelector(select.token);
 
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const checkTokenValidity = async () => {
     if (token) {
@@ -35,7 +36,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className={classes.app}>
       <NavBar />
       <main>
         <Switch>
